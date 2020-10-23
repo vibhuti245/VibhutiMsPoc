@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: auditms
+  rabbitmq:
+    host: ${rabbitmq.host:192.168.99.102}
+    port: ${rabbitmq.port:5672}
+  cloud:
+    stream:
+      bindings:
+        webaudit-in: 
+          destination: webaudit
+          group: audit
+
+  h2:
+    console:
+      enabled: true
+      path: /h2
+      settings:
+        web-allow-others: true
+        
+  datasource: 
+    username: sa
+    password: 
+    url: jdbc:h2:mem:auditDb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+  jpa:
+    show-sql: true
+  security:
+    user:
+      name: admin
+      password: admin
+
+
+server:
+  port: 8077
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'  
+        
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.int}
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${eureka.uri:http://192.168.99.102:8761/eureka}
+      
+feign:
+  hystrix:
+    enabled: true
